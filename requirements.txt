@@ -1,0 +1,7 @@
+# PROJECT/main.py — Flask + MySQL (works with Jinja2 3.x and Flask-SQLAlchemy 3)
+Flask==2.3.3
+Flask-Login==0.6.3
+Flask-SQLAlchemy==3.1.1
+SQLAlchemy==2.0.49
+PyMySQL==1.1.0
+python-dotenv==1.0.1
