@@ -254,7 +254,3 @@ After importing `hms.sql`, the following accounts are available:
 | Manage prescriptions | ✅ | ✅ | 👁 view only |
 
 ---
-
-## 📄 License
-
-This project was developed for academic purposes as part of UCS310 · DBMS · Thapar Institute of Engineering and Technology · Jan–May 2026.
