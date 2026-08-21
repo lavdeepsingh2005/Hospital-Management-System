@@ -1,0 +1,78 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Patients Booking
+{% endblock title %}
+
+{% block body %}
+<div class="row">
+    <div class="col-md-5 mb-3">
+        <div class="card h-100">
+            <div class="card-header bg-dark text-white">Available Doctors</div>
+            <ul class="list-group list-group-flush">
+                {% for doctor in doctors %}
+                    <li class="list-group-item">
+                        <strong>{{ doctor.full_name }}</strong>
+                        <br>
+                        <small class="text-muted">{{ doctor.department.dept_name }} | {{ doctor.qualification or 'N/A' }}</small>
+                        <br>
+                        <small class="text-muted">Exp: {{ doctor.experience_yrs or 0 }} yrs | Phone: {{ doctor.phone or 'N/A' }}</small>
+                    </li>
+                {% else %}
+                    <li class="list-group-item">No doctors available.</li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+
+    <div class="col-md-7">
+        <div class="card">
+            <div class="card-header bg-dark text-white">Book Appointment</div>
+            <div class="card-body">
+                {% if patient_profile %}
+                <div class="alert alert-secondary">
+                    <strong>Profile:</strong> {{ patient_profile.full_name }} | DOB: {{ patient_profile.dob or 'N/A' }} | Address: {{ patient_profile.address or 'N/A' }}
+                </div>
+                {% endif %}
+                <div class="alert alert-info">
+                    <strong>Note:</strong> Select your appointment date and enter your disease/complaint before clicking Confirm Booking.
+                </div>
+                <form action="{{ url_for('patient') }}" method="post">
+                    <div class="form-group">
+                        <label for="doctor_id">Doctor</label>
+                        <select class="form-control" id="doctor_id" name="doctor_id" required>
+                            <option value="">Select doctor</option>
+                            {% for doctor in doctors %}
+                                <option value="{{ doctor.doctor_id }}">{{ doctor.full_name }} - {{ doctor.department.dept_name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="slot_id">Slot</label>
+                        <select class="form-control" id="slot_id" name="slot_id" required>
+                            <option value="">Select slot</option>
+                            {% for slot in slots %}
+                                <option value="{{ slot.slot_id }}">{{ slot.slot_name }} ({{ slot.start_time }} - {{ slot.end_time }})</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="date">Appointment date (MM/DD/YYYY)</label>
+                        <input type="date" class="form-control" id="date" name="date" min="{{ today or '' }}" required>
+                        <small class="form-text text-muted">This is the date you want to visit the hospital.</small>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="disease">Disease / complaint</label>
+                        <input type="text" class="form-control" id="disease" name="disease" placeholder="Example: Fever, Cough, Headache" required>
+                    </div>
+
+                    <button type="submit" class="btn btn-dark btn-block">Confirm Booking</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock body %}

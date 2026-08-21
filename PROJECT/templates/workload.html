@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Doctor Workload
+{% endblock title %}
+
+{% block body %}
+<h4 class="mb-3">Doctor Workload Summary</h4>
+<div class="table-responsive">
+    <table class="table table-striped table-bordered">
+        <thead class="thead-dark">
+            <tr>
+                <th>Doctor</th>
+                <th>Department</th>
+                <th>Total</th>
+                <th>Completed</th>
+                <th>Upcoming</th>
+                <th>Cancelled</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for row in rows %}
+                <tr>
+                    <td>{{ row.doctor_name }}</td>
+                    <td>{{ row.dept_name }}</td>
+                    <td>{{ row.total_appointments }}</td>
+                    <td>{{ row.completed }}</td>
+                    <td>{{ row.upcoming }}</td>
+                    <td>{{ row.cancelled }}</td>
+                </tr>
+            {% else %}
+                <tr>
+                    <td colspan="6" class="text-center">No workload data available.</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock body %}

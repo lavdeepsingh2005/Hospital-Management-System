@@ -1,0 +1,228 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Admin Dashboard
+{% endblock title %}
+
+{% block body %}
+<h3 class="page-title">Admin Dashboard</h3>
+
+<div class="row mb-2">
+    <div class="col-md-3 mb-2">
+        <a class="btn btn-dark btn-block" href="{{ url_for('doctors') }}">Register Doctor</a>
+    </div>
+    <div class="col-md-3 mb-2">
+        <a class="btn btn-dark btn-block" href="{{ url_for('admins') }}">Create Admin</a>
+    </div>
+    <div class="col-md-3 mb-2">
+        <a class="btn btn-outline-dark btn-block" href="{{ url_for('bookings') }}">Manage Appointments</a>
+    </div>
+    <div class="col-md-3 mb-2">
+        <a class="btn btn-outline-dark btn-block" href="{{ url_for('details') }}">View Full Audit Log</a>
+    </div>
+    <div class="col-md-3 mb-2">
+        <a class="btn btn-outline-dark btn-block" href="{{ url_for('workload') }}">Doctor Workload</a>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-3 mb-3"><div class="card card-metric"><div class="card-body"><h6>Total Users</h6><h4>{{ stats.users }}</h4></div></div></div>
+    <div class="col-md-3 mb-3"><div class="card card-metric"><div class="card-body"><h6>Doctors</h6><h4>{{ stats.doctors }}</h4></div></div></div>
+    <div class="col-md-3 mb-3"><div class="card card-metric"><div class="card-body"><h6>Patients</h6><h4>{{ stats.patients }}</h4></div></div></div>
+    <div class="col-md-3 mb-3"><div class="card card-metric"><div class="card-body"><h6>Appointments</h6><h4>{{ stats.appointments }}</h4></div></div></div>
+</div>
+
+<div class="row">
+    <div class="col-md-4 mb-3"><div class="card card-metric border-primary"><div class="card-body"><h6>Scheduled</h6><h4>{{ stats.scheduled }}</h4></div></div></div>
+    <div class="col-md-4 mb-3"><div class="card card-metric border-success"><div class="card-body"><h6>Completed</h6><h4>{{ stats.completed }}</h4></div></div></div>
+    <div class="col-md-4 mb-3"><div class="card card-metric border-danger"><div class="card-body"><h6>Cancelled</h6><h4>{{ stats.cancelled }}</h4></div></div></div>
+</div>
+
+<h5 class="mt-4 page-title">Recent Appointments</h5>
+<div class="table-responsive table-card">
+    <table class="table table-bordered table-striped">
+        <thead class="thead-dark">
+            <tr>
+                <th>Appt ID</th>
+                <th>Patient</th>
+                <th>Doctor</th>
+                <th>Department</th>
+                <th>Date</th>
+                <th>Slot</th>
+                <th>Status</th>
+                <th>Created At</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for appt in recent_appointments %}
+            <tr>
+                <td>{{ appt.appt_id }}</td>
+                <td>{{ appt.patient_name }}</td>
+                <td>{{ appt.doctor_name }}</td>
+                <td>{{ appt.dept_name }}</td>
+                <td>{{ appt.appt_date }}</td>
+                <td>{{ appt.slot_name }}</td>
+                <td>
+                    {% if appt.status == 'Scheduled' %}
+                        <span class="status-pill status-scheduled">{{ appt.status }}</span>
+                    {% elif appt.status == 'Completed' %}
+                        <span class="status-pill status-completed">{{ appt.status }}</span>
+                    {% elif appt.status == 'Cancelled' %}
+                        <span class="status-pill status-cancelled">{{ appt.status }}</span>
+                    {% else %}
+                        <span class="status-pill">{{ appt.status }}</span>
+                    {% endif %}
+                </td>
+                <td>{{ appt.created_at or '-' }}</td>
+            </tr>
+            {% else %}
+            <tr>
+                <td colspan="8" class="text-center">No appointments available.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<h5 class="mt-4 page-title">Recent Audit Logs</h5>
+<div class="table-responsive table-card">
+    <table class="table table-bordered table-striped">
+        <thead class="thead-dark">
+            <tr>
+                <th>Log ID</th>
+                <th>Table</th>
+                <th>Record</th>
+                <th>Action</th>
+                <th>By</th>
+                <th>Description</th>
+                <th>Timestamp</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for log in recent_logs %}
+            <tr>
+                <td>{{ log.log_id }}</td>
+                <td>{{ log.table_name }}</td>
+                <td>{{ log.record_id }}</td>
+                <td>{{ log.action }}</td>
+                <td>{{ log.performed_by_email or '-' }}</td>
+                <td>{{ log.description or '-' }}</td>
+                <td>{{ log.timestamp }}</td>
+            </tr>
+            {% else %}
+            <tr>
+                <td colspan="7" class="text-center">No logs available.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<h5 class="mt-4 page-title">Audit Summary (View)</h5>
+<div class="table-responsive table-card">
+    <table class="table table-bordered table-striped">
+        <thead class="thead-dark">
+            <tr>
+                <th>Table</th>
+                <th>Action</th>
+                <th>Occurrences</th>
+                <th>Last Occurred</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for row in audit_summary %}
+            <tr>
+                <td>{{ row.table_name }}</td>
+                <td>{{ row.action }}</td>
+                <td>{{ row.occurrences }}</td>
+                <td>{{ row.last_occurred }}</td>
+            </tr>
+            {% else %}
+            <tr>
+                <td colspan="4" class="text-center">No audit summary available.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<h5 class="mt-4 page-title">Manage Doctors</h5>
+<div class="table-responsive table-card">
+    <table class="table table-bordered table-striped">
+        <thead class="thead-dark">
+            <tr>
+                <th>Doctor ID</th>
+                <th>Name</th>
+                <th>Department</th>
+                <th>Email</th>
+                <th>Phone</th>
+                <th>Experience</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for doc in doctors_for_admin %}
+            <tr>
+                <td>{{ doc.doctor_id }}</td>
+                <td>{{ doc.full_name }}</td>
+                <td>{{ doc.dept_name }}</td>
+                <td>{{ doc.email }}</td>
+                <td>{{ doc.phone or '-' }}</td>
+                <td>{{ doc.experience_yrs }}</td>
+                <td>
+                    <form action="{{ url_for('delete_doctor', doctor_id=doc.doctor_id) }}" method="post" class="d-inline">
+                        <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Delete this doctor account?');">Delete Doctor</button>
+                    </form>
+                </td>
+            </tr>
+            {% else %}
+            <tr>
+                <td colspan="7" class="text-center">No doctors available.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<h5 class="mt-4 page-title">Manage Users</h5>
+<div class="table-responsive table-card">
+    <table class="table table-bordered table-striped">
+        <thead class="thead-dark">
+            <tr>
+                <th>User ID</th>
+                <th>Username</th>
+                <th>Role</th>
+                <th>Email</th>
+                <th>Active</th>
+                <th>Created At</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for usr in users_for_admin %}
+            <tr>
+                <td>{{ usr.user_id }}</td>
+                <td>{{ usr.username }}</td>
+                <td>{{ usr.usertype }}</td>
+                <td>{{ usr.email }}</td>
+                <td>{{ 'Yes' if usr.is_active else 'No' }}</td>
+                <td>{{ usr.created_at or '-' }}</td>
+                <td>
+                    {% if usr.usertype == 'Admin' %}
+                        <span class="text-muted">Protected</span>
+                    {% else %}
+                        <form action="{{ url_for('delete_user', user_id=usr.user_id) }}" method="post" class="d-inline">
+                            <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Delete this user account?');">Delete User</button>
+                        </form>
+                    {% endif %}
+                </td>
+            </tr>
+            {% else %}
+            <tr>
+                <td colspan="7" class="text-center">No users available.</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock body %}

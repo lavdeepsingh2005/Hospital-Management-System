@@ -1,0 +1,116 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Signup
+{% endblock title %}
+
+{% block body %}
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <div class="card">
+            <div class="card-header bg-dark text-white">Create Account</div>
+            <div class="card-body">
+                <div class="alert alert-info">
+                    <strong>Fill details in this order:</strong><br>
+                    Username, Full name, User type, Gender, Phone (10 digits), DOB, Address, Email, Password.
+                </div>
+                <form action="{{ url_for('signup') }}" method="post">
+                    <div class="form-group">
+                        <label for="username">Username (login name)</label>
+                        <input type="text" class="form-control" id="username" name="username" placeholder="Example: krish123" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="fullname">Full name</label>
+                        <input type="text" class="form-control" id="fullname" name="fullname" placeholder="Example: Krish Kumar" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="usertype">User type (choose one)</label>
+                        <select class="form-control" id="usertype" name="usertype" required>
+                            <option value="Patient" selected>Patient</option>
+                            <option value="Doctor">Doctor</option>
+                        </select>
+                    </div>
+                    <div id="doctor_fields" style="display:none;">
+                        <div class="form-group">
+                            <label for="dept_id">Doctor department (required for Doctor)</label>
+                            <select class="form-control" id="dept_id" name="dept_id">
+                                <option value="">Select department</option>
+                                {% for dept in depts %}
+                                    <option value="{{ dept.dept_id }}">{{ dept.dept_name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="qualification">Qualification (required for Doctor)</label>
+                            <input type="text" class="form-control" id="qualification" name="qualification" placeholder="Example: MBBS, MD">
+                        </div>
+                        <div class="form-group">
+                            <label for="experience_yrs">Experience in years</label>
+                            <input type="number" class="form-control" id="experience_yrs" name="experience_yrs" min="0" value="0">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="gender">Gender (choose one)</label>
+                        <select class="form-control" id="gender" name="gender" required>
+                            <option value="Male">Male</option>
+                            <option value="Female">Female</option>
+                            <option value="Other">Other</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="phone">Phone (10 digits)</label>
+                        <input type="text" class="form-control" id="phone" name="phone" maxlength="10" pattern="[0-9]{10}" placeholder="Example: 9876543210" required>
+                        <small class="form-text text-muted">Enter only numbers, exactly 10 digits.</small>
+                    </div>
+                    <div id="patient_fields">
+                        <div class="form-group">
+                            <label for="dob">Date of birth (Patient)</label>
+                            <input type="date" class="form-control" id="dob" name="dob">
+                        </div>
+                        <div class="form-group">
+                            <label for="address">Address (Patient)</label>
+                            <textarea class="form-control" id="address" name="address" rows="2" placeholder="Street, city, state"></textarea>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="email">Email address</label>
+                        <input type="email" class="form-control" id="email" name="email" placeholder="Example: name@gmail.com" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="password">Password</label>
+                        <input type="password" class="form-control" id="password" name="password" placeholder="Create a secure password" required>
+                    </div>
+                    <button type="submit" class="btn btn-dark btn-block">Signup</button>
+                </form>
+                <div class="mt-3">
+                    Already a user? <a href="{{ url_for('login') }}">Login</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    (function () {
+        var userType = document.getElementById('usertype');
+        var doctorFields = document.getElementById('doctor_fields');
+        var patientFields = document.getElementById('patient_fields');
+        var dept = document.getElementById('dept_id');
+        var qual = document.getElementById('qualification');
+        var dob = document.getElementById('dob');
+        var address = document.getElementById('address');
+
+        function toggleDoctorFields() {
+            var isDoctor = userType.value === 'Doctor';
+            doctorFields.style.display = isDoctor ? 'block' : 'none';
+            patientFields.style.display = isDoctor ? 'none' : 'block';
+            dept.required = isDoctor;
+            qual.required = isDoctor;
+            dob.required = !isDoctor;
+            address.required = !isDoctor;
+        }
+
+        userType.addEventListener('change', toggleDoctorFields);
+        toggleDoctorFields();
+    })();
+</script>
+{% endblock body %}

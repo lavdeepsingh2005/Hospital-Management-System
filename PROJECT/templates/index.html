@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+
+{% block title %}
+HOME
+{% endblock title %}
+
+{% block body %}
+<div class="jumbotron">
+    <h1 class="display-5">Hospital Management System</h1>
+    <p class="lead mb-4">
+        Book, track, and manage appointments with a clean dashboard experience.
+    </p>
+    {% if not current_user.is_authenticated %}
+        <a class="btn btn-primary mr-2" href="{{ url_for('login') }}">Login</a>
+        <a class="btn btn-outline-primary" href="{{ url_for('signup') }}">Signup</a>
+    {% elif current_user.usertype == "Patient" %}
+        <a class="btn btn-primary mr-2" href="{{ url_for('patient') }}">Book Appointment</a>
+        <a class="btn btn-outline-primary" href="{{ url_for('bookings') }}">View My Bookings</a>
+    {% else %}
+        <a class="btn btn-primary mr-2" href="{{ url_for('bookings') }}">View Appointments</a>
+        <a class="btn btn-outline-primary" href="{{ url_for('details') }}">View Audit Log</a>
+    {% endif %}
+</div>
+
+<h4 class="page-title">Quick Overview</h4>
+<div class="row">
+    <div class="col-md-4 mb-3">
+        <div class="card h-100">
+            <div class="card-body">
+                <h5 class="card-title">Departments</h5>
+                <p class="card-text text-muted mb-0">Use the top search to find doctors and departments quickly.</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4 mb-3">
+        <div class="card h-100">
+            <div class="card-body">
+                <h5 class="card-title">Appointments</h5>
+                <p class="card-text text-muted mb-0">Book appointments in a few steps and track them from My Bookings.</p>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4 mb-3">
+        <div class="card h-100">
+            <div class="card-body">
+                <h5 class="card-title">Audit Trail</h5>
+                <p class="card-text text-muted mb-0">Admins and doctors can review activity logs for accountability.</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock body %}

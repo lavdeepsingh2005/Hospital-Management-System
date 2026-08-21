@@ -1,0 +1,76 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Booking
+{% endblock title %}
+
+{% block body %}
+<h4 class="page-title">Appointment Details</h4>
+{% if has_upcoming is not none %}
+    {% if has_upcoming %}
+    <div class="alert alert-success">You have at least one upcoming scheduled appointment.</div>
+    {% else %}
+    <div class="alert alert-warning">You currently have no upcoming scheduled appointments.</div>
+    {% endif %}
+{% endif %}
+<div class="table-responsive table-card">
+    <table class="table table-striped table-bordered">
+        <thead class="thead-dark">
+            <tr>
+                <th>Appt ID</th>
+                <th>Patient</th>
+                <th>Patient Email</th>
+                <th>Gender</th>
+                <th>Phone</th>
+                <th>Doctor</th>
+                <th>Department</th>
+                <th>Slot</th>
+                <th>Slot Start</th>
+                <th>Date</th>
+                <th>Disease</th>
+                <th>Status</th>
+                <th>Created At</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for row in query %}
+                <tr>
+                    <td>{{ row.appt_id }}</td>
+                    <td>{{ row.patient_name }}</td>
+                    <td>{{ row.patient_email }}</td>
+                    <td>{{ row.gender }}</td>
+                    <td>{{ row.phone }}</td>
+                    <td>{{ row.doctor_name }}</td>
+                    <td>{{ row.dept_name }}</td>
+                    <td>{{ row.slot_name }}</td>
+                    <td>{{ row.slot_start }}</td>
+                    <td>{{ row.appt_date }}</td>
+                    <td>{{ row.disease }}</td>
+                    <td>
+                        {% if row.status == 'Scheduled' %}
+                            <span class="status-pill status-scheduled">{{ row.status }}</span>
+                        {% elif row.status == 'Completed' %}
+                            <span class="status-pill status-completed">{{ row.status }}</span>
+                        {% elif row.status == 'Cancelled' %}
+                            <span class="status-pill status-cancelled">{{ row.status }}</span>
+                        {% else %}
+                            <span class="status-pill">{{ row.status }}</span>
+                        {% endif %}
+                    </td>
+                    <td>{{ created_at_map.get(row.appt_id) or '-' }}</td>
+                    <td>
+                        <a href="{{ url_for('edit', appt_id=row.appt_id) }}" class="btn btn-sm btn-primary">Edit</a>
+                        <a href="{{ url_for('prescriptions') }}" class="btn btn-sm btn-secondary">Prescriptions</a>
+                        <a href="{{ url_for('delete', appt_id=row.appt_id) }}" class="btn btn-sm btn-danger" onclick="return confirm('Cancel this appointment?');">Cancel</a>
+                    </td>
+                </tr>
+            {% else %}
+                <tr>
+                    <td colspan="15" class="text-center">No appointments found.</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+{% endblock body %}

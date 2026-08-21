@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+
+{% block title %}
+My Profile
+{% endblock title %}
+
+{% block body %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card mb-3">
+            <div class="card-header bg-dark text-white">Account Details</div>
+            <div class="card-body">
+                <p><strong>User ID:</strong> {{ current_user.user_id }}</p>
+                <p><strong>Username:</strong> {{ current_user.username }}</p>
+                <p><strong>Role:</strong> {{ current_user.usertype }}</p>
+                <p><strong>Email:</strong> {{ current_user.email }}</p>
+                <p><strong>Active:</strong> {{ 'Yes' if current_user.is_active else 'No' }}</p>
+                <p><strong>Created At:</strong> {{ current_user.created_at or '-' }}</p>
+            </div>
+        </div>
+
+        {% if patient_profile %}
+        <div class="card">
+            <div class="card-header bg-secondary text-white">Patient Profile</div>
+            <div class="card-body">
+                <p><strong>Full Name:</strong> {{ patient_profile.full_name }}</p>
+                <p><strong>Gender:</strong> {{ patient_profile.gender }}</p>
+                <p><strong>DOB:</strong> {{ patient_profile.dob or '-' }}</p>
+                <p><strong>Phone:</strong> {{ patient_profile.phone }}</p>
+                <p><strong>Address:</strong> {{ patient_profile.address or '-' }}</p>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock body %}

@@ -1,0 +1,63 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Edit Appointment
+{% endblock title %}
+
+{% block body %}
+<div class="row justify-content-center">
+    <div class="col-md-7">
+        <div class="card">
+            <div class="card-header bg-primary text-white">Edit Appointment #{{ appt.appt_id }}</div>
+            <div class="card-body">
+                <form action="{{ url_for('edit', appt_id=appt.appt_id) }}" method="post">
+                    <div class="form-group">
+                        <label for="doctor_display">Doctor</label>
+                        <select id="doctor_display" class="form-control" disabled>
+                            {% for doctor in doctors %}
+                                <option value="{{ doctor.doctor_id }}" {% if doctor.doctor_id == appt.doctor_id %}selected{% endif %}>
+                                    {{ doctor.full_name }} - {{ doctor.department.dept_name }}
+                                </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+
+                    {% if current_user.usertype != 'Doctor' %}
+                        <div class="form-group">
+                            <label for="slot_id">Slot</label>
+                            <select class="form-control" id="slot_id" name="slot_id" required>
+                                {% for slot in slots %}
+                                    <option value="{{ slot.slot_id }}" {% if slot.slot_id == appt.slot_id %}selected{% endif %}>
+                                        {{ slot.slot_name }} ({{ slot.start_time }} - {{ slot.end_time }})
+                                    </option>
+                                {% endfor %}
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="date">Appointment date</label>
+                            <input type="date" class="form-control" id="date" name="date" value="{{ appt.appt_date }}" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="disease">Disease / complaint</label>
+                            <input type="text" class="form-control" id="disease" name="disease" value="{{ appt.disease }}" required>
+                        </div>
+                    {% endif %}
+
+                    <div class="form-group">
+                        <label for="status">Status</label>
+                        <select class="form-control" id="status" name="status" required>
+                            <option value="Scheduled" {% if appt.status == 'Scheduled' %}selected{% endif %}>Scheduled</option>
+                            <option value="Completed" {% if appt.status == 'Completed' %}selected{% endif %}>Completed</option>
+                            <option value="Cancelled" {% if appt.status == 'Cancelled' %}selected{% endif %}>Cancelled</option>
+                        </select>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary btn-block">Update Appointment</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock body %}
